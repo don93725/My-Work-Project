@@ -104,7 +104,7 @@
 			}
 			
 			function magicEvent(){
-				var loc = '/HomeworkWeek2/info_mtn_lis.do';
+				var loc = '/HomeworkWeek2/CmInfomtn/select.do';
 				if($('#magicBtn').text().trim() == 'Oracle'){
 					loc += '?db=oracle';
 				}else {

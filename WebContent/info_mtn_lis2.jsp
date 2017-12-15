@@ -403,10 +403,11 @@
 					var addTr = $(this).parents('tr');				
 					
 					$.ajax({
-						url: '${path}/CmInfomtn/insert.do',
+						url: '${path}/info_mtn_lis.do',
 						type: "POST",
 						dataType: "text",
 						data:{
+							"action" : "insert",
 							"db" : '${db}',
 							"id" : id,
 							"name" : name,
@@ -441,9 +442,6 @@
 							checkAllCheckboxStat();
 							checkAllDataVisible();
 							$('#addIndex').text('新增第' + indexCount + '筆資料');
-							$('.addData').css('display',"none");
-							$('.addData input').val('');
-							$('.addData input[type="radio"]').removeProp('checked');
 						},
 						error: function(xhr, ajaxOptions, thrownError){}
 					});
@@ -485,18 +483,19 @@
 				} 
 				else if(confirm('真的要刪除?')){	
 					var id = $(this).parents('tr').find('.data').text();
-					var $self = $(this).parents('tr');
+					
 					$.ajax({
-						url : '${path}/CmInfomtn/delete.do',
+						url : '${path}/info_mtn_lis.do',
 						type : "POST",
 						dataType : "text",
 						data : {
+							"action" : "delete",
 							"id" : id,
 							"db" : '${db}'
 						},						
 						success: function(msg){
-							$self.next().remove();
-							$self.remove();
+							$(this).parents('tr').next().remove();
+							$(this).parents('tr').remove();
 							fillIndex();	
 							$('#addIndex').text('新增第' + indexCount + '筆資料');
 							checkAllCheckboxStat();
@@ -549,10 +548,11 @@
 				if(checkColumn){
 					var objToJSON = JSON.stringify(dataList);
 					$.ajax({
-						url : '${path}/CmInfomtn/update.do',
+						url : '${path}/info_mtn_lis.do',
 						type : "POST",
 						dataType : "text",
 						data : { 
+							"action" : "update",
 							"db" : '${db}',
 							"objToJSON" : objToJSON
 						},	
