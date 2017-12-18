@@ -495,6 +495,7 @@
 							"db" : '${db}'
 						},						
 						success: function(msg){
+							alert(msg);
 							$self.next().remove();
 							$self.remove();
 							fillIndex();	

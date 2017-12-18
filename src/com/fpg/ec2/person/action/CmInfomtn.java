@@ -35,7 +35,7 @@ public class CmInfomtn {
 		return "info_mtn_lis";
 	}
 	@RequestMapping(value = "/delete.do")
-	public void delete(HttpServletRequest req, @RequestParam("db") String db, @RequestParam("id") String id) throws Exception{
+	public void delete(HttpServletResponse res, @RequestParam("db") String db, @RequestParam("id") String id) throws Exception{
 		InformationBOImpl informationBO = null;		
 		if("oracle".equals(db)){
 			informationBO = new InformationBOImpl();
@@ -43,6 +43,7 @@ public class CmInfomtn {
 			informationBO = new InformationBOImpl(1);
 		}	
 		System.out.println("--------刪除 id = " + id + " 的資料-------");
+		res.getWriter().print("go");
 		informationBO.deleteInformationByID(id);
 	}
 	@RequestMapping(value = "/update.do")
@@ -63,26 +64,17 @@ public class CmInfomtn {
         informationBO.updateInformations(voList);		
 	}
 	@RequestMapping(value = "/insert.do")
-	public void insert(HttpServletRequest req, @RequestParam("db") String db) throws Exception{
-		req.setCharacterEncoding("utf-8");
+	public void insert(HttpServletResponse res, Information informations, @RequestParam("db") String db) throws Exception{
 		InformationBOImpl informationBO = null;		
 		if("oracle".equals(db)){
 			informationBO = new InformationBOImpl();
 		}else{
 			informationBO = new InformationBOImpl(1);
 		}	
-		Information informations= new Information();
-		informations.setAddress(req.getParameter("address"));
-		informations.setAge(new Integer(req.getParameter("age")));
-		informations.setCell_phone(req.getParameter("cell_phone"));
-		informations.setId(req.getParameter("id"));
-		informations.setJob(req.getParameter("job"));
-		informations.setName(req.getParameter("name"));
-		informations.setPhone(req.getParameter("phone"));
-		informations.setSex(new Integer(req.getParameter("sex")));
 		System.out.println("--------新增資料-------");
 		System.out.println(informations);		
 		informationBO.saveInformation(informations);
+		res.getWriter().print("go");
 	}
 	
 }
