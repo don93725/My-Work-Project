@@ -1,5 +1,5 @@
 package com.fpg.ec2.person.datasource.dao;
-@org.aspectj.lang.annotation.Aspect
+@Aspect
 public class Aspect {
-
+	public 
 }

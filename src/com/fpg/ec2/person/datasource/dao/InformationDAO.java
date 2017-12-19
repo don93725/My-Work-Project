@@ -8,12 +8,15 @@ import java.util.List;
 import org.apache.catalina.core.ApplicationContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import com.fpg.ec2.person.model.Information;
 
@@ -59,7 +62,7 @@ public class InformationDAO implements InformationDAOInterf {
 			sql += " where id = ?";
 			params = new Object[]{id};
 		}		
-		List<Information> tempList = new ArrayList<>();
+		List<Information> tempList = new ArrayList<Information>();
 		jdbcTemplate.query(sql, params , new RowCallbackHandler(){
 			@Override
 			public void processRow(ResultSet rs) throws SQLException {
@@ -83,17 +86,26 @@ public class InformationDAO implements InformationDAOInterf {
 	
 	@Override
 	public void updateInformations(ArrayList<Information> voList) {
-		txManager.getTransaction(TransactionDefinition.ISOLATION_DEFAULT);
+		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+        def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+        TransactionStatus status = txManager.getTransaction(def);
 		String sql = "update informations set name = ?, phone = ?, sex = ?, age = ?, job = ?, cell_phone = ?, address = ? where id = ?";
 		int result = 0;
 			
-		for(int i = 0 ; i < voList.size() ; i++){
-			Information informations = voList.get(i);
-			Object[] params = {informations.getName(),informations.getPhone(),informations.getSex(),informations.getAge(),informations.getJob(), informations.getCell_phone(), informations.getAddress(), informations.getId()};
-			if(params != null){					
-				jdbcTemplate.update(sql, params);					
+		try {
+			for(int i = 0 ; i < voList.size() ; i++){
+				Information informations = voList.get(i);
+				Object[] params = {informations.getName(),informations.getPhone(),informations.getSex(),informations.getAge(),informations.getJob(), informations.getCell_phone(), informations.getAddress(), informations.getId()};
+				if(params != null){					
+					jdbcTemplate.update(sql, params);					
+				}
 			}
+			
+		} catch (DataAccessException e) {
+			txManager.rollback(status);
+			e.printStackTrace();
 		}
+		txManager.commit(status);
 	}
 	/**
 	 * 變數「db」為資料庫選擇器，"oracle" = oracle, "sql" = sql server
