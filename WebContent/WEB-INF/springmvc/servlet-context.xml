@@ -2,36 +2,61 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
     xmlns:context="http://www.springframework.org/schema/context"
     xsi:schemaLocation="
         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
 
     <!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
 
     <!-- Scans within the base package of the application for @Components to configure as beans -->
     <!-- @Controller, @Service, @Configuration, etc. -->
-    <context:component-scan base-package="com.fpg.ec2.person.action">
-    	<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
-    	<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
-    </context:component-scan> 
-   
+    <context:component-scan base-package="com.fpg.ec2.person.action"/>
+   	<context:component-scan base-package="com.fpg.ec2.person.datasource.dao" />
+   	<context:component-scan base-package="com.fpg.ec2.person.bo" />
     <!-- Enables the Spring MVC @Controller programming model -->
     <mvc:annotation-driven />
     
+    <tx:annotation-driven />
+    <bean id="txManagerForOracle" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+	p:dataSource-ref="dsForOracle"/>
+    <bean id="txManagerForSqlServer" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+	p:dataSource-ref="dsForSqlServer"/>
+    <bean id="dsForSqlServer" class="org.apache.tomcat.dbcp.dbcp.BasicDataSource"
+    destroy-method="close"
+    p:driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+    p:url="jdbc:sqlserver://10.3.226.97:1433;DatabaseName=ecpscm"
+    p:username="ecpscmp"
+    p:password="ecpscmp" />
+    <bean id="dsForOracle" class="org.apache.tomcat.dbcp.dbcp.BasicDataSource"
+    destroy-method="close"
+	p:driverClassName="oracle.jdbc.OracleDriver"
+	p:url="jdbc:oracle:thin:@tpfn07:1523:tpfn07"
+	p:username="ecpcrmp"
+	p:password="ecpcrmp"/>
+	
+	<bean id="jdbcTemplateForSqlServer" class="org.springframework.jdbc.core.JdbcTemplate"
+	p:dataSource-ref="dsForSqlServer"/>
+	<bean id="jdbcTemplateForOracle" class="org.springframework.jdbc.core.JdbcTemplate"
+	p:dataSource-ref="dsForOracle"/>
 
     <!-- 配置靜態資源，以讓MVC忽略不進行導頁判斷 -->  	
     <mvc:resources mapping="/jslib/**" location="/jslib/"/> 
     <mvc:resources mapping="/js/**" location="/js/"/> 
     <mvc:resources mapping="/css/**" location="/css/"/> 
     <mvc:resources mapping="/images/**" location="/images/"/> 
-    	
     <!-- Resolve logical view names to .jsp resources in the /WEB-INF/views directory -->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/" />
         <property name="suffix" value=".jsp" />
     </bean>
- 
+    <bean id="aspect" class="com.fpg.ec2.person.datasource.dao.Aspect" />
+ 	<aop:aspectj-autoproxy />
   
 </beans>

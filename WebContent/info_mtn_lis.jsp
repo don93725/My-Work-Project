@@ -547,7 +547,7 @@
 						targetTR.find('.specialDiv').removeClass('error');
 					}
 				});
-				if(checkColumn){
+				if(true){
 					var objToJSON = JSON.stringify(dataList);
 					$.ajax({
 						url : '${path}/CmInfomtn/update.do',

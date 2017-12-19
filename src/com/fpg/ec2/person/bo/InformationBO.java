@@ -6,10 +6,11 @@ import java.util.List;
 import com.fpg.ec2.person.model.Information;
 
 public interface InformationBO {
-	public int saveInformation(Information informationVO);
-	public int updateInformation(Information informationVO);
-	public int updateInformations(ArrayList<Information> voList);
-	public int deleteInformationByID(String id);
+	public void saveInformation(Information informationVO);
+	public void updateInformation(Information informationVO);
+	public void updateInformations(ArrayList<Information> voList);
+	public void deleteInformationByID(String id);
 	public Information findInformationByID(String id);
 	public List<Information> findAllInformations(String id);
+	public void setDb(String db);
 }

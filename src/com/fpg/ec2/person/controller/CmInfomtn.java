@@ -25,8 +25,6 @@ System.out.println("Action = " + action + " , db = " + db);
 		InformationBOImpl informationBO = null;		
 		if("oracle".equals(db)){
 			informationBO = new InformationBOImpl();
-		}else{
-			informationBO = new InformationBOImpl(1);
 		}		
 		
 

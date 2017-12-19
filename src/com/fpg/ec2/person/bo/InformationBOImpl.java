@@ -3,28 +3,26 @@ package com.fpg.ec2.person.bo;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.fpg.ec2.person.datasource.dao.InformationDAO;
 import com.fpg.ec2.person.datasource.dao.InformationDAOInterf;
 import com.fpg.ec2.person.model.Information;
-
+@Service
 public class InformationBOImpl implements InformationBO {
-	public InformationBOImpl(){		
-		dao = new InformationDAO();
+
+	public void saveInformation(Information informationVO){
+		dao.insertInformation(informationVO);
 	}
-	public InformationBOImpl(int i){		
-		dao = new InformationDAO(i);
+	public void updateInformation(Information informationVO){
+		dao.updateInformation(informationVO);
 	}
-	public int saveInformation(Information informationVO){
-		return dao.insertInformation(informationVO);
+	public void updateInformations(ArrayList<Information> voList){
+		dao.updateInformations(voList);
 	}
-	public int updateInformation(Information informationVO){
-		return dao.updateInformation(informationVO);
-	}
-	public int updateInformations(ArrayList<Information> voList){
-		return dao.updateInformations(voList);
-	}
-	public int deleteInformationByID(String id){
-		return dao.deleteInformationByID(id);
+	public void deleteInformationByID(String id){
+		dao.deleteInformationByID(id);
 	}
 	public Information findInformationByID(String id){
 		return dao.selectInformationByID(id);
@@ -32,6 +30,10 @@ public class InformationBOImpl implements InformationBO {
 	public List<Information> findAllInformations(String id){
 		return dao.selectAllInformations(id);
 	}
+	public void setDb(String db){
+		dao.setDb(db);
+	}
+	@Autowired
 	private InformationDAOInterf dao;
 	
 }
