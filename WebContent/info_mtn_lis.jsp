@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <!DOCTYPE html>
 <html lang="en-ch">
 	<head>
@@ -8,7 +9,7 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
 		<title>人員維護列表</title>
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+		<link rel="stylesheet" href="<%=request.getContextPath() %>/css/bootstrap.min.css">
 		<!--[if lt IE 9]>
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
@@ -68,74 +69,7 @@
 								<input type="button" id='openBtn' class='btn btn-info' value='展開全部' onclick="showAllData();">
 							</th>
 					</thead>
-					<tbody>
-						<c:if test="${empty listInfomation }">
-							<tr class="dataTrigger">
-								
-								<td><input type="checkbox" class='check'></td>
-								<td><div class="idx"></div></td>
-								<td>
-									<div class="data">TEST111111</div>
-								</td>
-								<td>
-									<button class='btn btn-danger' onclick='del.call(this);'>刪除</button>								
-								</td>
-	
-							</tr>
-							<tr class="moreData" style="display: none;" >
-								<td colspan="4">								
-									<div class="col-xs-12 col-sm-6">
-										<div class="input-group input-group-lg">
-										  <span class="input-group-addon" id="sizing-addon1">姓名</span>
-										  <input type="text" class="form-control" name='name' aria-describedby="sizing-addon1" value='假姓名' disabled="true">
-										</div>
-									</div>
-									<div class="col-xs-12 col-sm-6">									
-										<div class="input-group input-group-lg">
-										  <span class="input-group-addon" id="sizing-addon1">電話</span>
-										  <input type="text" class="form-control" name='phone' aria-describedby="sizing-addon1" value='假電話' disabled="true">
-										</div>									
-									</div>
-									<div class="col-xs-12 col-sm-6">									
-										<div class="input-group input-group-lg">
-										  <span class="input-group-addon" id="sizing-addon1">性別</span>
-										  <div class='form-control specialDiv' disabled="true">
-											  <label class="sex">
-												  <input type="radio" class="sexRadio" name="sex0" id="sex" value="0" disabled="true"> 男
-											  </label>
-											  <label class="sex">
-												  <input type="radio" class="sexRadio" name="sex0" id="sex" value="1" disabled="true"> 女
-											  </label>
-										  </div>
-										</div>										
-									</div>
-									<div class="col-xs-12 col-sm-6">									
-										<div class="input-group input-group-lg">
-										  <span class="input-group-addon" id="sizing-addon1">年紀</span>
-										  <input type="text" class="form-control" name='age' aria-describedby="sizing-addon1" value='00' disabled="true">
-										</div>									
-									</div>
-									<div class="col-xs-12 col-sm-6">									
-										<div class="input-group input-group-lg">
-										  <span class="input-group-addon" id="sizing-addon1">職業</span>
-										  <input type="text" class="form-control" name='job' aria-describedby="sizing-addon1" value='假職業' disabled="true">
-										</div>									
-									</div>
-									<div class="col-xs-12 col-sm-6">									
-										<div class="input-group input-group-lg">
-										  <span class="input-group-addon" id="sizing-addon1">手機</span>
-										  <input type="text" class="form-control" name='cphone' aria-describedby="sizing-addon1" value='假手機' disabled="true">
-										</div>									
-									</div>
-									<div class="col-xs-12 col-sm-12">									
-										<div class="input-group input-group-lg">
-										  <span class="input-group-addon" id="sizing-addon1">居住地址</span>
-										  <input type="text" class="form-control" name='address' aria-describedby="sizing-addon1" value='假地址' disabled="true">
-										</div>
-									</div>	
-								</td>
-							</tr>
-						</c:if>
+					<tbody>						
 						<c:if test="${!empty listInfomation }">
 							<c:forEach var="info" items="${listInfomation }" varStatus="loop">
 								<tr class="dataTrigger">
@@ -150,17 +84,34 @@
 		
 								</tr>
 								<tr class="moreData" style="display: none;" >
-									<td colspan="4">								
+									<td colspan="4">
+										<div class="row">
+											<div class="col-xs-12 col-sm-6" style="display:none;">
+												<a href="#" class="thumbnail">      
+													<img class="ulPic" src="<%=request.getContextPath() %>/image/kobe.jpg">
+												</a>
+											</div>
+											<div class="col-xs-12 col-sm-6">
+												<a href="#" class="thumbnail">      
+													<img src="<%=request.getContextPath() %>/image/kobe.jpg">
+												</a>
+											</div>
+											<div class="col-xs-12 col-sm-6">
+												<button class="btn btn-primary ulBtn" style="width: 100%;">上傳照片</button>
+												<button class="btn btn-danger removePicBtn" onclick="Preview.removePic.call(this);" style="width: 100%; display: none;" >移除照片</button>
+												<input class="file" type="file" name="file${loop.count }" style="display: none">
+											</div>											
+										</div>								
 										<div class="col-xs-12 col-sm-6">
 											<div class="input-group input-group-lg">
 											  <span class="input-group-addon" id="sizing-addon1">姓名</span>
-											  <input type="text" class="form-control" name='name' aria-describedby="sizing-addon1" value='${info.name}' disabled="true">
+											  <input type="text" class="form-control" name='name${loop.count }' aria-describedby="sizing-addon1" value='${info.name}' disabled="true">
 											</div>
 										</div>
 										<div class="col-xs-12 col-sm-6">									
 											<div class="input-group input-group-lg">
 											  <span class="input-group-addon" id="sizing-addon1">電話</span>
-											  <input type="text" class="form-control" name='phone' aria-describedby="sizing-addon1" value='${info.phone }' disabled="true">
+											  <input type="text" class="form-control" name='phone${loop.count }' aria-describedby="sizing-addon1" value='${info.phone }' disabled="true">
 											</div>									
 										</div>
 										<div class="col-xs-12 col-sm-6">									
@@ -179,38 +130,50 @@
 										<div class="col-xs-12 col-sm-6">									
 											<div class="input-group input-group-lg">
 											  <span class="input-group-addon" id="sizing-addon1">年紀</span>
-											  <input type="text" class="form-control" name='age' aria-describedby="sizing-addon1" value='${info.age }' disabled="true">
+											  <input type="text" class="form-control" name='age${loop.count }' aria-describedby="sizing-addon1" value='${info.age }' disabled="true">
 											</div>									
 										</div>
 										<div class="col-xs-12 col-sm-6">									
 											<div class="input-group input-group-lg">
 											  <span class="input-group-addon" id="sizing-addon1">職業</span>
-											  <input type="text" class="form-control" name='job' aria-describedby="sizing-addon1" value='${info.job }' disabled="true">
+											  <input type="text" class="form-control" name='job${loop.count }' aria-describedby="sizing-addon1" value='${info.job }' disabled="true">
 											</div>									
 										</div>
 										<div class="col-xs-12 col-sm-6">									
 											<div class="input-group input-group-lg">
 											  <span class="input-group-addon" id="sizing-addon1">手機</span>
-											  <input type="text" class="form-control" name='cphone' aria-describedby="sizing-addon1" value='${info.cell_phone }' disabled="true">
+											  <input type="text" class="form-control" name='cell_phone${loop.count }' aria-describedby="sizing-addon1" value='${info.cell_phone }' disabled="true">
 											</div>									
 										</div>
 										<div class="col-xs-12 col-sm-12">									
 											<div class="input-group input-group-lg">
 											  <span class="input-group-addon" id="sizing-addon1">居住地址</span>
-											  <input type="text" class="form-control" name='address' aria-describedby="sizing-addon1" value='${info.address }' disabled="true">
+											  <input type="text" class="form-control" name='address${loop.count }' aria-describedby="sizing-addon1" value='${info.address }' disabled="true">
 											</div>
 										</div>	
 									</td>
 								</tr>
 							</c:forEach>
 						</c:if>
-						<tr class="addData" style="display: none;" >
+						<tr class="addData" <c:if test="${!empty listInfomation }">style="display: none;"</c:if> >
 							<td colspan="4">
 								<div class="col-xs-12 col-sm-12">
 									<h1 id='addIndex'>新增資料</h1>
 									<button onclick='fillCol.call(this)'></button>
 								</div>
-								<form id='addForm'>
+								<form:form id='addForm' method="post" modelAttribute="informations" action='${pageContext.request.contextPath }/CmInfomtn/insert.do?db=${db}'>
+									<div class="row">
+										<div class="col-xs-12 col-sm-6" style="display:none;">
+											<a href="#" class="thumbnail">      
+												<img class="ulPic" src="<%=request.getContextPath() %>/image/kobe.jpg">
+											</a>
+										</div>
+										<div class="col-xs-12 col-sm-6">
+											<button class="btn btn-primary addPicBtn" style="width: 100%;">上傳照片</button>
+											<button class="btn btn-danger removePicBtn" onclick="Preview.removeAddPic.call(this);" style="width: 100%; display: none;" >移除照片</button>
+											<input class="addFile" type="file" name="file" style="display: none">
+										</div>											
+									</div>				
 									<div class="col-xs-12 col-sm-6">
 										<div class="input-group input-group-lg">
 										  <span class="input-group-addon" id="sizing-addon1">姓名</span>
@@ -234,10 +197,10 @@
 										  <span class="input-group-addon" id="sizing-addon1">性別</span>
 										  <div class="form-control">
 											  <label class="sex">
-												  <input required="required" type="radio" name="n"  class="sexRadio" id="sex" value="0"> 男
+												  <input required="required" type="radio" name="sex"  class="sexRadio" id="sex" value="0"> 男
 											  </label>
 											  <label class="sex">
-												  <input type="radio" class="sexRadio" name="n" id="sex" value="1"> 女
+												  <input type="radio" class="sexRadio" name="sex" id="sex" value="1"> 女
 											  </label>
 										  </div>
 										</div>										
@@ -257,13 +220,13 @@
 									<div class="col-xs-12 col-sm-6">									
 										<div class="input-group input-group-lg">
 										  <span class="input-group-addon" id="sizing-addon1">手機</span>
-										  <input required="required" type="text" class="form-control" name='cphone' aria-describedby="sizing-addon1">
+										  <input required="required" type="text" class="form-control" name='cell_phone' aria-describedby="sizing-addon1">
 										</div>									
 									</div>
 									<div class="col-xs-12 col-sm-6">									
 										<div class="input-group input-group-lg">
 										  <span class="input-group-addon" id="sizing-addon1">居住地址</span>
-										  <input required="required" type="text" class="form-control" name='address' aria-describedby="sizing-addon1">
+										  <input type="text" class="form-control" name='address' aria-describedby="sizing-addon1">
 										</div>
 									</div>
 									<div class="col-xs-12 col-sm-12">									
@@ -272,7 +235,7 @@
 										  <button class="btn btn-danger btn-lg" onclick="rejectAdd.call(this);">取消新增</button>
 										</div>
 									</div>	
-								</form>
+								</form:form>
 							</td>
 						</tr>
 						<tr class='lastTr' >
@@ -288,8 +251,8 @@
 		</div>
 		
 		
-		<script src="https://code.jquery.com/jquery.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script src="<%=request.getContextPath() %>/jquery/jquery-2.1.4.min.js"></script>
+		<script src="<%=request.getContextPath() %>/js/bootstrap.min.js"></script>
 		<script type="text/javascript">
 			var openFlag = false , indexCount;
 			$(function(){
@@ -298,6 +261,7 @@
 					evt.preventDefault();
 				});
 			})
+			
 			
 			function checkAllCheckboxStat(){
 				if($('.check').length == $('.check:checked').length){
@@ -320,13 +284,13 @@
 					if($(this).prop('checked') == true){
 						$('.check').each(function(){
 							$(this).prop('checked','true');
-							$(this).parents('tr').next().find('input').removeProp('disabled');
+							$(this).parents('tr').next().find('input').removeAttr('disabled');
 							$(this).parents('tr').next().find('.specialDiv').removeAttr('disabled');
 						});
 					} else {
 						$('.check').each(function(){
 							$('.check').removeProp('checked');
-							$(this).parents('tr').next().find('input').prop('disabled','disabled');
+							$(this).parents('tr').next().find('input').attr('disabled','disabled');
 							$(this).parents('tr').next().find('.specialDiv').attr('disabled','disabled');
 						});
 						
@@ -337,14 +301,67 @@
 				$('input.check').change(function(){
 					checkAllCheckboxStat();
 					if($(this).prop('checked')){
-						$(this).parents('tr').next().find('input').removeProp('disabled');
+						$(this).parents('tr').next().find('input').removeAttr('disabled');
 						$(this).parents('tr').next().find('.specialDiv').removeAttr('disabled');
 					} else {
-						$(this).parents('tr').next().find('input').prop('disabled','disabled');
+						$(this).parents('tr').next().find('input').attr('disabled','disabled');
 						$(this).parents('tr').next().find('.specialDiv').attr('disabled','disabled');
 					}
 					
 				});
+				var uploadBtn = $(".ulBtn");
+				uploadBtn.css("height", uploadBtn.parents("div").prev().find("img").prop("height")/2);
+				uploadBtn.next().css("height", uploadBtn.parents("div").prev().find("img").prop("height")/2);
+				uploadBtn.unbind("click");
+				uploadBtn.click(function(){
+					$(this).next().next().trigger("click");
+				});
+				Preview.change_file();
+				$(".addPicBtn").unbind("click");
+				$(".addPicBtn").click(function(){
+					$(this).next().next().trigger("click");
+				});
+			}
+			var Preview = new function(){
+				root = $('.file');
+				this.change_file = function(){
+					root.on('change', function(){
+						var idx = $(this).attr("name").substring(4,$(this).attr("name").length);
+						show(this, idx);
+					});
+				}
+				var show = function(input, idx){
+					if(input.files && input.files[0]){
+						each_img(input.files, idx);
+					}
+				}
+				this.removePic = function (){
+					var $ulPic = $(this).parents("div").prev();
+					$ulPic.prev().find(".ulPic").attr("src", "");
+					$ulPic.prev().css("display", "none");
+					$ulPic.css("display", "");
+					$(this).css("display", "none");
+					$(this).next().val('')
+				}
+				var each_img = function(files, idx){
+					$.each(files, function(index,file){
+						if (!file.type.match('image')){
+							alert("請上傳圖片");
+			    			return;
+			    		}
+						
+						var reader  = new FileReader();						
+						reader.onload = function(){
+							$(".file[name='file" + idx + "']").parent("div").prev().prev().find("img").attr("src", reader.result);
+							$(".file[name='file" + idx + "']").parent("div").prev().hide().prev().show();	
+							$(".file[name='file" + idx + "']").prev().css("display", "");
+						}
+						if(file){
+							reader.readAsDataURL(file);
+						}
+						
+					});
+				}
 			}
 // 			function retrunLastSexIdx(){
 // 				var strSexName = $('.moreData:last').find('.sexRadio').attr('name');
@@ -353,9 +370,14 @@
 			function resetNameIndex(){
 				var idx = 1;
 				$('.moreData').each(function(){
-					$(this).find('.sexRadio').each(function(){
-						$(this).attr('name', 'sex'+ idx);
-					});
+					$(this).find('.sexRadio').attr('name', 'sex'+ idx);
+					$(this).find('input[name^="name"]').attr('name', 'name'+ idx);
+					$(this).find('input[name^="phone"]').attr('name', 'phone'+ idx);
+					$(this).find('input[name^="age"]').attr('name', 'age'+ idx);
+					$(this).find('input[name^="job"]').attr('name', 'job'+ idx);
+					$(this).find('input[name^="cell_phone"]').attr('name', 'cell_phone'+ idx);
+					$(this).find('input[name^="address"]').attr('name', 'address'+ idx);
+					$(this).find('input[name^="file"]').attr('name', 'file'+ idx);
 					idx++;
 				});
 			}
@@ -365,7 +387,7 @@
 					return '資料長度不對';
 				}
 				var charCode = id.toLowerCase().charCodeAt(0);
-				if (charCode < 97 || charCode > 122){
+				if ((charCode < 97) || (charCode > 122)){
 					return '第一字必須為英文';
 				}
 				var strNumCheck = false;
@@ -393,13 +415,13 @@
 				if(validResult.length != 0){
 					targetTR.find('input[name="id"]').attr('title',validResult);
 				}else{
-					var name = targetTR.find('input[name="name"]').val();
-					var phone = targetTR.find('input[name="phone"]').val();
+					var name = targetTR.find('input[name^="name"]').val();
+					var phone = targetTR.find('input[name^="phone"]').val();
 					var sex = targetTR.find('input.sexRadio:checked').val();
-					var age = targetTR.find('input[name="age"]').val();
-					var job = targetTR.find('input[name="job"]').val();
-					var cell_phone = targetTR.find('input[name="cphone"]').val();
-					var address = targetTR.find('input[name="address"]').val();
+					var age = targetTR.find('input[name^="age"]').val();
+					var job = targetTR.find('input[name^="job"]').val();
+					var cell_phone = targetTR.find('input[name^="cell_phone"]').val();
+					var address = targetTR.find('input[name^="address"]').val();
 					var addTr = $(this).parents('tr');				
 					
 					$.ajax({
@@ -424,8 +446,8 @@
 							targetTR.addClass('addRow');
 							targetTR.find('.data').text(id);
 							targetTR = targetTR.next();
-							targetTR.find('input[name="name"]').val(name);
-							targetTR.find('input[name="phone"]').val(phone);
+							targetTR.find('input[name^="name"]').val(name);
+							targetTR.find('input[name^="phone"]').val(phone);
 							targetTR.prev()
 									.prev()
 									.find('input.sexRadio[value="' + targetTR.find('input.sexRadio:checked').val() + '"]')
@@ -433,10 +455,10 @@
 							init();
 							resetNameIndex();
 							targetTR.find('input.sexRadio[value="' + sex +'"]').prop('checked','checked');
-							targetTR.find('input[name="age"]').val(age);
-							targetTR.find('input[name="job"]').val(job);
-							targetTR.find('input[name="cphone"]').val(cell_phone);
-							targetTR.find('input[name="address"]').val(address);
+							targetTR.find('input[name^="age"]').val(age);
+							targetTR.find('input[name^="job"]').val(job);
+							targetTR.find('input[name^="cell_phone"]').val(cell_phone);
+							targetTR.find('input[name^="address"]').val(address);
 							targetTR.hide();	
 							checkAllCheckboxStat();
 							checkAllDataVisible();
@@ -522,22 +544,22 @@
 					$(this).parents('tr').addClass('addRow');
 					var obj = {
 						id : $(this).parents('tr').find('.data').text(),
-						name : targetTR.find('input[name="name"]').val(),
-						phone : targetTR.find('input[name="phone"]').val(),
+						name : targetTR.find('input[name^="name"]').val(),
+						phone : targetTR.find('input[name^="phone"]').val(),
 						sex : (targetTR.find('input.sexRadio:checked').val()),
-						age : targetTR.find('input[name="age"]').val(),
-						job : targetTR.find('input[name="job"]').val(),
-						cell_phone : targetTR.find('input[name="cphone"]').val(),
-						address : targetTR.find('input[name="address"]').val(),
+						age : targetTR.find('input[name^="age"]').val(),
+						job : targetTR.find('input[name^="job"]').val(),
+						cell_phone : targetTR.find('input[name^="cell_phone"]').val(),
+						address : targetTR.find('input[name^="address"]').val(),
 					};
 					dataList[index] = obj; 
 					var keyArr = Object.keys(obj);
 					for(var idx in keyArr){
 						if(obj[keyArr[idx]] == undefined || obj[keyArr[idx]].length == 0){
 							checkColumn = false;
-							targetTR.find('input[name="' + keyArr[idx] + '"]').addClass('error');
+							targetTR.find('input[name^="' + keyArr[idx] + '"]').addClass('error');
 						}else{
-							targetTR.find('input[name="' + keyArr[idx] + '"]').removeClass('error');
+							targetTR.find('input[name^="' + keyArr[idx] + '"]').removeClass('error');
 						}
 					}	
 					if(targetTR.find('input.sexRadio:checked').length == 0){
@@ -581,14 +603,14 @@
 			
 			function fillCol(){
 				var targetTR = $(this).parents('tr');
-				var id = targetTR.find('input[name="id"]').val('X987654321');
-				var name = targetTR.find('input[name="name"]').val('糧旭');
-				var phone = targetTR.find('input[name="phone"]').val('027654321');
+				var id = targetTR.find('input[name^="id"]').val('X987654321');
+				var name = targetTR.find('input[name^="name"]').val('糧旭');
+				var phone = targetTR.find('input[name^="phone"]').val('027654321');
 				var sex = targetTR.find('input.sexRadio[value="1"]').attr('checked','checked');
-				var age = targetTR.find('input[name="age"]').val(23);
-				var job = targetTR.find('input[name="job"]').val('程式設計師');
-				var cell_phone = targetTR.find('input[name="cphone"]').val('0987654321');
-				var address = targetTR.find('input[name="address"]').val('新店某處');
+				var age = targetTR.find('input[name^="age"]').val(23);
+				var job = targetTR.find('input[name^="job"]').val('程式設計師');
+				var cell_phone = targetTR.find('input[name^="cell_phone"]').val('0987654321');
+				var address = targetTR.find('input[name^="address"]').val('新店某處');
 					
 			}
 			
@@ -616,7 +638,7 @@
 						});
 						
 						result += "項次" + $(this).parents('tr').find('.idx').text().trim() + "：" +
-								$(this).parents('tr').next().find('input[name="name"]').val() + "<br>";					
+								$(this).parents('tr').next().find('input[name^="name"]').val() + "<br>";					
 					});
 					
 					if(flag){

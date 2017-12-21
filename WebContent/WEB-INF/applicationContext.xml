@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+    <!-- 配置靜態資源，以讓MVC忽略不進行導頁判斷 -->  	
+<!-- 	<tx:annotation-driven /> -->
+
+    <bean id="dsForSqlServer" class="org.apache.tomcat.dbcp.dbcp.BasicDataSource"
+    destroy-method="close"
+    p:driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+    p:url="jdbc:sqlserver://10.3.226.97:1433;DatabaseName=ecpscm"
+    p:username="ecpscmp"
+    p:password="ecpscmp" />
+    <bean id="dsForOracle" class="org.apache.tomcat.dbcp.dbcp.BasicDataSource"
+    destroy-method="close"
+	p:driverClassName="oracle.jdbc.OracleDriver"
+	p:url="jdbc:oracle:thin:@tpfn07:1523:tpfn07"
+	p:username="ecpcrmp"
+	p:password="ecpcrmp"/>
+	
+	<bean id="jdbcTemplateForSqlServer" class="org.springframework.jdbc.core.JdbcTemplate"
+	p:dataSource-ref="dsForSqlServer"/>
+	<bean id="jdbcTemplateForOracle" class="org.springframework.jdbc.core.JdbcTemplate"
+	p:dataSource-ref="dsForOracle"/>
+	<bean id="aspect" class="com.fpg.ec2.person.datasource.dao.MyAspect" />
+ 	<aop:aspectj-autoproxy />
+
+<!-- 讀取dbtype.properties之內容 -->
+<!-- 	<context:property-placeholder ignore-unresolvable="true" location="WEB-INF/dbtype.properties" />  -->
+<!-- 	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"> -->
+<!-- 		<property name="locations"> -->
+<!-- 			<list> -->
+<!-- 				<value>WEB-INF/dbtype.properties</value> -->
+<!-- 			</list> -->
+<!-- 		</property> -->
+<!-- 	</bean> -->
+	
+	<!-- 定義SqlSessionFactory(注意：要放在注入BO之前，才可協助檢查SQL MAP Error) -->  
+<!-- 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean"> -->
+<!-- 		<property name="dataSource" ref="dataSource" /> -->
+<!-- 		<property name="configLocation" value="/WEB-INF/myBatisConfig.xml"/> -->
+<!-- 		<property name="mapperLocations"> -->
+<!-- 			<list> -->
+<!-- 				<value>classpath:com/fpg/ec/sysinitpara/dao/xml/*.xml</value> -->
+<!-- 				<value>classpath:com/fpg/ec/ftcsystem/dao/${dbtype}/xml/*.xml</value> -->
+<!-- 				<value>classpath:com/fpg/ec/ftcsystem/dao/xml/*.xml</value> -->
+<!-- 				<value>classpath:com/fpg/ec/authority/dao/${dbtype}/xml/*.xml</value> -->
+<!-- 				<value>classpath:com/fpg/ec/authority/dao/xml/*.xml</value> -->
+<!-- 				<value>classpath:com/fpg/ec/email/dao/${dbtype}/xml/*.xml</value> -->
+<!-- 				<value>classpath:com/fpg/ec/email/dao/xml/*.xml</value> -->
+<!-- 				<value>classpath:com/fpg/ec/group/dao/${dbtype}/xml/*.xml</value> -->
+<!-- 				<value>classpath:com/fpg/ec/group/dao/xml/*.xml</value> -->
+<!-- 				<value>classpath:com/fpg/ec/supplier/dao/${dbtype}/xml/*.xml</value> -->
+<!-- 				<value>classpath:com/fpg/ec/supplier/dao/xml/*.xml</value> -->
+<!-- 				<value>classpath:com/fpg/ec/message/dao/${dbtype}/xml/*.xml</value> -->
+<!-- 				<value>classpath:com/fpg/ec/message/dao/xml/*.xml</value> -->
+<!-- 				<value>classpath:com/fpg/ec/order/dao/${dbtype}/xml/*.xml</value> -->
+<!-- 				<value>classpath:com/fpg/ec/order/dao/xml/*.xml</value> -->
+<!-- 				<value>classpath:com/fpg/ec/delivery/dao/${dbtype}/xml/*.xml</value> -->
+<!-- 				<value>classpath:com/fpg/ec/delivery/dao/xml/*.xml</value> -->
+<!-- 			</list> -->
+<!-- 		</property> -->
+<!-- 	</bean> -->
+	
+	<!-- 註冊所需與相關的DAO檔案 -->
+<!-- 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer"> -->
+<!-- 	      <property name="basePackage" value="com.fpg.ec.sysinitpara.dao; -->
+<!-- 	      									  com.fpg.ec.ftcsystem.dao; -->
+<!-- 	      									  com.fpg.ec.authority.dao; -->
+<!-- 	      									  com.fpg.ec.email.dao; -->
+<!-- 	      									  com.fpg.ec.group.dao;  -->
+<!-- 	      									  com.fpg.ec.supplier.dao; -->
+<!-- 	      									  com.fpg.ec.message.dao; -->
+<!-- 	      									  com.fpg.ec.order.dao; -->
+<!-- 	      									  com.fpg.ec.delivery.dao" /> -->
+<!-- 	</bean> -->
+	
+	<!-- 新建管理資料庫交易 Transaction Manager -->  
+    <bean id="txManagerForOracle" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+	p:dataSource-ref="dsForOracle"/>
+    <bean id="txManagerForSqlServer" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+	p:dataSource-ref="dsForSqlServer"/>
+
+	<!-- 定義AOP管理資料庫交易 Transaction Manager advice -->
+<!-- 	<tx:advice id="txAdviceForOracle" transaction-manager="txManagerForOracle"> -->
+<!-- 	    <tx:attributes> -->
+<!-- 	        <tx:method name="*" isolation="READ_COMMITTED" propagation="REQUIRED" rollback-for="java.lang.Exception"/> -->
+<!-- 	    </tx:attributes>  -->
+<!-- 	</tx:advice>     -->
+  
+	<!-- AOP管理資料庫交易直接將Transaction Managet匹配注入到BO METHOD中 --> 
+<!-- 	<aop:config> -->
+<!-- 	    <aop:pointcut id="txPointcutForOracle" expression="execution(* com.fpg.ec2.*.bo.*.*(..))"/> -->
+<!-- 	    <aop:advisor pointcut-ref="txPointcutForOracle" advice-ref="txAdviceForOracle"/> -->
+<!-- 	</aop:config> -->
+
+	<!-- 針對@Components裝配成Beans的應用類包進行掃描 --> <!-- @Controller, @Service, @Configuration, etc. -->
+<!-- 	<context:component-scan base-package="com.fpg.ec.sysinitpara.bo" /> -->
+<!-- 	<context:component-scan base-package="com.fpg.ec.sysinitpara.util" /> 系統參數設定 -->
+<!-- 	<context:component-scan base-package="com.fpg.ec.ftcsystem.bo" />  -->
+<!-- 	<context:component-scan base-package="com.fpg.ec.authority.bo" />  -->
+<!-- 	<context:component-scan base-package="com.fpg.ec.email.bo" />  -->
+<!-- 	<context:component-scan base-package="com.fpg.ec.group.bo" />  -->
+<!-- 	<context:component-scan base-package="com.fpg.ec.supplier.bo" /> -->
+<!-- 	<context:component-scan base-package="com.fpg.ec.message.bo" /> -->
+<!-- 	<context:component-scan base-package="com.fpg.ec.order.bo" /> -->
+<!-- 	<context:component-scan base-package="com.fpg.ec.delivery.bo" /> -->
+	
+	<!-- 設定多語系 --> 
+	<!-- <bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
+	    <property name="defaultLocale" value="zh_TW" />
+	</bean>
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+	    <property name="basename" value="classpath:com/fpg/ec/sysinitpara/resources/ApplicationResources" />
+	    <property name="useCodeAsDefaultMessage" value="true" /> 
+	    <property name="defaultEncoding" value="utf-8" />
+	    <property name="cacheSeconds" value="-1"/>
+	</bean> --> 
+	
+	<!-- 註冊公用物件 -->
+	<!-- <bean id="commonUtil" class="com.fpg.ec.ftcsystem.util.CommonUtil">
+		<property name="messageSource">
+			<ref bean="messageSource"/>
+		</property>
+	</bean> -->
+	
+	<!-- 註冊FreeMarker(此部分為固定用法) -->
+	<!-- <bean id="freeMarkerConfigurer" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+	 		<property name="templateLoaderPath" value="/WEB-INF/freemarker"/>
+		<property name="freemarkerSettings">
+			<props>
+			<prop key="datetime_format">yyyy/MM/dd hh:mm:ss</prop>
+			<prop key="date_format">yyyy/MM/dd</prop>
+			<prop key="time_format">hh:mm:ss</prop>
+			<prop key="number_format">#</prop>
+			<prop key="whitespace_stripping">true</prop>
+			<prop key="template_update_delay">0</prop>
+			<prop key="defaultEncoding">utf-8</prop>
+			</props>
+		</property>
+	</bean>
+	<bean id="freeMarkerUtil" class="com.fpg.ec.utility.freemarker.FreeMarkerUtil">
+		<property name="freeMarkerConfig" ref="freeMarkerConfigurer" />
+	</bean> -->
+	
+	<!-- 設定email之部分 -->
+	<!-- <bean id="javaMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl"> </bean> -->
+	<!-- 設定PDF之部分 -->
+	<!-- <bean id="html2PdfGenerator" class="com.fpg.ec.utility.pdf.Html2PdfGenerator"> </bean> -->
+    
+  
+</beans>
